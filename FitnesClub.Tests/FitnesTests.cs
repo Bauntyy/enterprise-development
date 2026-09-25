@@ -35,7 +35,7 @@ public class FitnesTests
             booking =>
                 booking.RoomName == roomName &&
                 booking.LessonDateTime <= now &&
-                booking.LessonDateTime > now.AddHours(-1));
+                booking.LessonDateTime.Date.Add(booking.Duration) > now);
 
         Assert.True(isRoomAvailable);
     }

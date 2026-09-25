@@ -31,9 +31,14 @@ public class Booking
     public Trainer Trainer { get; set; } = null!;
 
     /// <summary>
-    /// Дата и время занятия.
+    /// Дата и время занятия
     /// </summary>
     public required DateTime LessonDateTime { get; set; }
+
+    /// <summary>
+    /// Длительность занятия
+    /// </summary>
+    public required TimeSpan Duration { get; set; }
 
     /// <summary>
     /// Название зала

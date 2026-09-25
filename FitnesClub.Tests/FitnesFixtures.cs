@@ -58,16 +58,16 @@ public class FitnesFixtures
 
         Bookings.AddRange(
         [
-            new() { MemberId = Members[0].Id, Member = Members[0], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(1), RoomName = "Зал №1", IsTrial = false },
-            new() { MemberId = Members[1].Id, Member = Members[1], TrainerId = Trainers[1].Id, Trainer = Trainers[1], LessonDateTime = now.AddDays(2), RoomName = "Зал №2", IsTrial = true },
-            new() { MemberId = Members[2].Id, Member = Members[2], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(-2), RoomName = "Зал №1", IsTrial = false },
-            new() { MemberId = Members[3].Id, Member = Members[3], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(3), RoomName = "Зал №1", IsTrial = false },
-            new() { MemberId = Members[4].Id, Member = Members[4], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(4), RoomName = "Зал №3", IsTrial = true },
-            new() { MemberId = Members[5].Id, Member = Members[5], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(5), RoomName = "Зал №1", IsTrial = false },
-            new() { MemberId = Members[6].Id, Member = Members[6], TrainerId = Trainers[3].Id, Trainer = Trainers[3], LessonDateTime = now.AddDays(-5), RoomName = "Зал №2", IsTrial = false },
-            new() { MemberId = Members[7].Id, Member = Members[7], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(6), RoomName = "Зал №3", IsTrial = false },
-            new() { MemberId = Members[8].Id, Member = Members[8], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(7), RoomName = "Зал №1", IsTrial = true },
-            new() { MemberId = Members[9].Id, Member = Members[9], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(8), RoomName = "Зал №3", IsTrial = false }
+            new() { MemberId = Members[0].Id, Member = Members[0], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(1), Duration = TimeSpan.FromHours(1), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[1].Id, Member = Members[1], TrainerId = Trainers[1].Id, Trainer = Trainers[1], LessonDateTime = now.AddDays(2), Duration = TimeSpan.FromHours(2), RoomName = "Зал №2", IsTrial = true },
+            new() { MemberId = Members[2].Id, Member = Members[2], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(-2), Duration = TimeSpan.FromHours(1), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[3].Id, Member = Members[3], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(3), Duration = TimeSpan.FromHours(1), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[4].Id, Member = Members[4], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(4), Duration = TimeSpan.FromHours(2), RoomName = "Зал №3", IsTrial = true },
+            new() { MemberId = Members[5].Id, Member = Members[5], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(5), Duration = TimeSpan.FromHours(1), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[6].Id, Member = Members[6], TrainerId = Trainers[3].Id, Trainer = Trainers[3], LessonDateTime = now.AddDays(-5), Duration = TimeSpan.FromHours(1), RoomName = "Зал №2", IsTrial = false },
+            new() { MemberId = Members[7].Id, Member = Members[7], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(6), Duration = TimeSpan.FromHours(2), RoomName = "Зал №3", IsTrial = false },
+            new() { MemberId = Members[8].Id, Member = Members[8], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(7), Duration = TimeSpan.FromHours(1), RoomName = "Зал №1", IsTrial = true },
+            new() { MemberId = Members[9].Id, Member = Members[9], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(8), Duration = TimeSpan.FromHours(1), RoomName = "Зал №3", IsTrial = false }
         ]);
 
         foreach (var booking in Bookings)
