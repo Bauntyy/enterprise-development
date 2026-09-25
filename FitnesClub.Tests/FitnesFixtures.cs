@@ -3,133 +3,77 @@ using FitnesClub.Domain.Enums;
 
 namespace FitnesClub.Tests;
 
-/// <summary>
-/// Тестовый набор данных для проверки LINQ-запросов
-/// </summary>
 public class FitnesFixtures
 {
-    public readonly List<Trainer> Trainers;
-    public readonly List<FitnesClass> Classes;
-    public readonly List<Member> Members;
-    public readonly List<Schedule> Schedules;
-    public readonly List<Booking> Bookings;
+    public List<Specialization> Specializations { get; } =
+    [
+        new() { Name = "Фитнес" },
+        new() { Name = "Йога" },
+        new() { Name = "Силовые тренировки" },
+        new() { Name = "Пилатес" },
+        new() { Name = "Кардио" },
+        new() { Name = "Стретчинг" },
+        new() { Name = "Функциональный тренинг" },
+        new() { Name = "Кроссфит" },
+        new() { Name = "Бокс" },
+        new() { Name = "Танцевальные тренировки" }
+    ];
+
+
+    public List<Trainer> Trainers { get; } = [];
+    public List<Member> Members { get; } = [];
+    public List<Booking> Bookings { get; } = [];
 
     public FitnesFixtures()
     {
-        Trainers = GetTrainers();
-        Classes = GetFitnesClasses();
-        Members = GetMembers();
-        Schedules = GetSchedules(Classes, Trainers);
-        Bookings = GetBookings(Members, Schedules);
-    }
+        Trainers.AddRange(
+        [
+            new() { PassportNumber = "1000000001", FirstName = "Алексей", LastName = "Смирнов", Gender = Gender.Male, BirthDate = new(1985, 3, 15), SpecializationId = Specializations[0].Id, Specialization = Specializations[0], WorkExperienceYears = 8, PhoneNumber = "+79990000001" },
+            new() { PassportNumber = "1000000002", FirstName = "Елена", LastName = "Волкова", Gender = Gender.Female, BirthDate = new(1990, 7, 20), SpecializationId = Specializations[1].Id, Specialization = Specializations[1], WorkExperienceYears = 6, PhoneNumber = "+79990000002" },
+            new() { PassportNumber = "1000000003", FirstName = "Дмитрий", LastName = "Соколов", Gender = Gender.Male, BirthDate = new(1982, 11, 5), SpecializationId = Specializations[2].Id, Specialization = Specializations[2], WorkExperienceYears = 12, PhoneNumber = "+79990000003" },
+            new() { PassportNumber = "1000000004", FirstName = "Ольга", LastName = "Морозова", Gender = Gender.Female, BirthDate = new(1992, 2, 10), SpecializationId = Specializations[3].Id, Specialization = Specializations[3], WorkExperienceYears = 3, PhoneNumber = "+79990000004" },
+            new() { PassportNumber = "1000000005", FirstName = "Игорь", LastName = "Новиков", Gender = Gender.Male, BirthDate = new(1980, 9, 25), SpecializationId = Specializations[4].Id, Specialization = Specializations[4], WorkExperienceYears = 15, PhoneNumber = "+79990000005" },
+            new() { PassportNumber = "1000000006", FirstName = "Анна", LastName = "Федорова", Gender = Gender.Female, BirthDate = new(1995, 4, 18), SpecializationId = Specializations[5].Id, Specialization = Specializations[5], WorkExperienceYears = 2, PhoneNumber = "+79990000006" },
+            new() { PassportNumber = "1000000007", FirstName = "Максим", LastName = "Козлов", Gender = Gender.Male, BirthDate = new(1988, 6, 12), SpecializationId = Specializations[6].Id, Specialization = Specializations[6], WorkExperienceYears = 7, PhoneNumber = "+79990000007" },
+            new() { PassportNumber = "1000000008", FirstName = "Татьяна", LastName = "Лебедева", Gender = Gender.Female, BirthDate = new(1986, 12, 1), SpecializationId = Specializations[7].Id, Specialization = Specializations[7], WorkExperienceYears = 10, PhoneNumber = "+79990000008" },
+            new() { PassportNumber = "1000000009", FirstName = "Сергей", LastName = "Петров", Gender = Gender.Male, BirthDate = new(1984, 1, 30), SpecializationId = Specializations[8].Id, Specialization = Specializations[8], WorkExperienceYears = 9, PhoneNumber = "+79990000009" },
+            new() { PassportNumber = "1000000010", FirstName = "Мария", LastName = "Васильева", Gender = Gender.Female, BirthDate = new(1991, 8, 22), SpecializationId = Specializations[9].Id, Specialization = Specializations[9], WorkExperienceYears = 4, PhoneNumber = "+79990000010" }
+        ]);
 
-    /// <summary>
-    /// Создаёт список из 10 тренеров
-    /// </summary>
-    private static List<Trainer> GetTrainers() =>
-    [
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Алексей", LastName = "Смирнов", Specialization = "Силовой тренинг", HourlyRate = 2000m, HireDate = new DateTime(2020, 1, 15), PhoneNumber = "+79001110001" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Елена", LastName = "Волкова", Specialization = "Йога и Растяжка", HourlyRate = 1800m, HireDate = new DateTime(2021, 3, 10), PhoneNumber = "+79001110002" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Дмитрий", LastName = "Соколов", Specialization = "Кроссфит", HourlyRate = 2200m, HireDate = new DateTime(2019, 5, 20), PhoneNumber = "+79001110003" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Ольга", LastName = "Морозова", Specialization = "Пилатес", HourlyRate = 1700m, HireDate = new DateTime(2022, 2, 1), PhoneNumber = "+79001110004" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Игорь", LastName = "Новиков", Specialization = "Бокс", HourlyRate = 2500m, HireDate = new DateTime(2018, 11, 11), PhoneNumber = "+79001110005" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Анна", LastName = "Федорова", Specialization = "Танцы и Зумба", HourlyRate = 1600m, HireDate = new DateTime(2023, 4, 15), PhoneNumber = "+79001110006" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Максим", LastName = "Козлов", Specialization = "Тренажерный зал", HourlyRate = 1900m, HireDate = new DateTime(2021, 8, 30), PhoneNumber = "+79001110007" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Татьяна", LastName = "Лебедева", Specialization = "Аквааэробика", HourlyRate = 2100m, HireDate = new DateTime(2020, 6, 12), PhoneNumber = "+79001110008" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Сергей", LastName = "Петров", Specialization = "ТРИАТЛОН и Кардио", HourlyRate = 2300m, HireDate = new DateTime(2019, 9, 5), PhoneNumber = "+79001110009" },
-        new Trainer { Id = Guid.NewGuid(), FirstName = "Мария", LastName = "Васильева", Specialization = "Стретчинг", HourlyRate = 1750m, HireDate = new DateTime(2022, 10, 1), PhoneNumber = "+79001110010" }
-    ];
+        Members.AddRange(
+        [
+            new() { PassportNumber = "2000000001", FirstName = "Иван", LastName = "Иванов", Gender = Gender.Male, BirthDate = new(1995, 5, 10), PhoneNumber = "+79991111111", MembershipStartDate = DateTime.Today.AddMonths(-2), MembershipEndDate = DateTime.Today.AddMonths(1) },
+            new() { PassportNumber = "2000000002", FirstName = "Анна", LastName = "Петрова", Gender = Gender.Female, BirthDate = new(1998, 8, 15), PhoneNumber = "+79991111112", MembershipStartDate = DateTime.Today.AddMonths(-3), MembershipEndDate = DateTime.Today.AddMonths(2) },
+            new() { PassportNumber = "2000000003", FirstName = "Алексей", LastName = "Сидоров", Gender = Gender.Male, BirthDate = new(1992, 1, 20), PhoneNumber = "+79991111113", MembershipStartDate = DateTime.Today.AddMonths(-6), MembershipEndDate = DateTime.Today.AddDays(-10) },
+            new() { PassportNumber = "2000000004", FirstName = "Екатерина", LastName = "Смирнова", Gender = Gender.Female, BirthDate = new(1997, 3, 12), PhoneNumber = "+79991111114", MembershipStartDate = DateTime.Today.AddMonths(-1), MembershipEndDate = DateTime.Today.AddMonths(3) },
+            new() { PassportNumber = "2000000005", FirstName = "Михаил", LastName = "Кузнецов", Gender = Gender.Male, BirthDate = new(1989, 10, 3), PhoneNumber = "+79991111115", MembershipStartDate = DateTime.Today.AddMonths(-8), MembershipEndDate = DateTime.Today.AddDays(-30) },
+            new() { PassportNumber = "2000000006", FirstName = "Ольга", LastName = "Попова", Gender = Gender.Female, BirthDate = new(1994, 6, 25), PhoneNumber = "+79991111116", MembershipStartDate = DateTime.Today.AddMonths(-2), MembershipEndDate = DateTime.Today.AddMonths(1) },
+            new() { PassportNumber = "2000000007", FirstName = "Артем", LastName = "Васильев", Gender = Gender.Male, BirthDate = new(1990, 9, 17), PhoneNumber = "+79991111117", MembershipStartDate = DateTime.Today.AddMonths(-5), MembershipEndDate = DateTime.Today.AddDays(-5) },
+            new() { PassportNumber = "2000000008", FirstName = "Наталья", LastName = "Соколова", Gender = Gender.Female, BirthDate = new(1996, 11, 8), PhoneNumber = "+79991111118", MembershipStartDate = DateTime.Today.AddMonths(-1), MembershipEndDate = DateTime.Today.AddMonths(2) },
+            new() { PassportNumber = "2000000009", FirstName = "Павел", LastName = "Михайлов", Gender = Gender.Male, BirthDate = new(1987, 4, 14), PhoneNumber = "+79991111119", MembershipStartDate = DateTime.Today.AddMonths(-7), MembershipEndDate = DateTime.Today.AddDays(-15) },
+            new() { PassportNumber = "2000000010", FirstName = "Ирина", LastName = "Новикова", Gender = Gender.Female, BirthDate = new(1993, 12, 30), PhoneNumber = "+79991111120", MembershipStartDate = DateTime.Today.AddMonths(-2), MembershipEndDate = DateTime.Today.AddMonths(1) } 
+        ]);
 
-    /// <summary>
-    /// Создаёт список из 10 направлений занятий
-    /// </summary>
-    private static List<FitnesClass> GetFitnesClasses() =>
-    [
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Power Body", Description = "Силовая тренировка на все группы мышц", DurationMinutes = 60, Capacity = 15 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Hatha Yoga", Description = "Классическая йога для ума и тела", DurationMinutes = 90, Capacity = 10 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Crossfit WOD", Description = "Высокоинтенсивный функциональный тренинг", DurationMinutes = 45, Capacity = 12 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Pilates Mat", Description = "Укрепление корсета и осанки", DurationMinutes = 60, Capacity = 8 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Boxing Club", Description = "Отработка техники ударов и выносливости", DurationMinutes = 60, Capacity = 10 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Zumba Dance", Description = "Танцевальная кардио-тренировка", DurationMinutes = 55, Capacity = 20 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Aqua Fitness", Description = "Занятия в бассейне с сопротивлением воды", DurationMinutes = 45, Capacity = 12 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Stretching", Description = "Глубокая растяжка и расслабление мышц", DurationMinutes = 50, Capacity = 15 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "Spinning", Description = "Интенсивная тренировка на сайкл-тренажерах", DurationMinutes = 45, Capacity = 14 },
-        new FitnesClass { Id = Guid.NewGuid(), Name = "TRX Suspension", Description = "Тренировка с собственным весом на петлях TRX", DurationMinutes = 60, Capacity = 10 }
-    ];
+        var now = DateTime.Now;
 
-    /// <summary>
-    /// Создаёт список из 10 клиентов
-    /// </summary>
-    private static List<Member> GetMembers() =>
-    [
-        new Member { Id = Guid.NewGuid(), FirstName = "Иван", LastName = "Иванов", PhoneNumber = "+79991112233", Email = "ivan@test.com", BirthDate = new DateTime(1995, 5, 20), JoinDate = DateTime.Now.AddMonths(-12), MembershipType = MembershipType.VIP },
-        new Member { Id = Guid.NewGuid(), FirstName = "Анна", LastName = "Петрова", PhoneNumber = "+79992223344", Email = "anna@test.com", BirthDate = new DateTime(2000, 3, 15), JoinDate = DateTime.Now.AddMonths(-6), MembershipType = MembershipType.Premium },
-        new Member { Id = Guid.NewGuid(), FirstName = "Алексей", LastName = "Сидоров", PhoneNumber = "+79993334455", Email = null, BirthDate = new DateTime(1988, 11, 2), JoinDate = DateTime.Now.AddMonths(-3), MembershipType = MembershipType.Standard },
-        new Member { Id = Guid.NewGuid(), FirstName = "Екатерина", LastName = "Смирнова", PhoneNumber = "+79994445566", Email = "katya@test.com", BirthDate = new DateTime(1997, 8, 19), JoinDate = DateTime.Now.AddMonths(-8), MembershipType = MembershipType.Premium },
-        new Member { Id = Guid.NewGuid(), FirstName = "Михаил", LastName = "Кузнецов", PhoneNumber = "+79995556677", Email = "misha@test.com", BirthDate = new DateTime(1992, 1, 30), JoinDate = DateTime.Now.AddMonths(-1), MembershipType = MembershipType.Standard },
-        new Member { Id = Guid.NewGuid(), FirstName = "Ольга", LastName = "Попова", PhoneNumber = "+79996667788", Email = null, BirthDate = new DateTime(2002, 7, 7), JoinDate = DateTime.Now.AddMonths(-2), MembershipType = MembershipType.Standard },
-        new Member { Id = Guid.NewGuid(), FirstName = "Артем", LastName = "Васильев", PhoneNumber = "+79997778899", Email = "artem@test.com", BirthDate = new DateTime(1985, 4, 12), JoinDate = DateTime.Now.AddMonths(-24), MembershipType = MembershipType.VIP },
-        new Member { Id = Guid.NewGuid(), FirstName = "Наталья", LastName = "Соколова", PhoneNumber = "+79998889900", Email = "natasha@test.com", BirthDate = new DateTime(1999, 12, 5), JoinDate = DateTime.Now.AddMonths(-5), MembershipType = MembershipType.Premium },
-        new Member { Id = Guid.NewGuid(), FirstName = "Павел", LastName = "Михайлов", PhoneNumber = "+79999990011", Email = "pavel@test.com", BirthDate = new DateTime(1991, 9, 25), JoinDate = DateTime.Now.AddMonths(-15), MembershipType = MembershipType.VIP },
-        new Member { Id = Guid.NewGuid(), FirstName = "Ирина", LastName = "Новикова", PhoneNumber = "+79990001122", Email = null, BirthDate = new DateTime(2003, 2, 14), JoinDate = DateTime.Now.AddMonths(-4), MembershipType = MembershipType.Standard }
-    ];
+        Bookings.AddRange(
+        [
+            new() { MemberId = Members[0].Id, Member = Members[0], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(1), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[1].Id, Member = Members[1], TrainerId = Trainers[1].Id, Trainer = Trainers[1], LessonDateTime = now.AddDays(2), RoomName = "Зал №2", IsTrial = true },
+            new() { MemberId = Members[2].Id, Member = Members[2], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(-2), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[3].Id, Member = Members[3], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(3), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[4].Id, Member = Members[4], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(4), RoomName = "Зал №3", IsTrial = true },
+            new() { MemberId = Members[5].Id, Member = Members[5], TrainerId = Trainers[0].Id, Trainer = Trainers[0], LessonDateTime = now.AddDays(5), RoomName = "Зал №1", IsTrial = false },
+            new() { MemberId = Members[6].Id, Member = Members[6], TrainerId = Trainers[3].Id, Trainer = Trainers[3], LessonDateTime = now.AddDays(-5), RoomName = "Зал №2", IsTrial = false },
+            new() { MemberId = Members[7].Id, Member = Members[7], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(6), RoomName = "Зал №3", IsTrial = false },
+            new() { MemberId = Members[8].Id, Member = Members[8], TrainerId = Trainers[2].Id, Trainer = Trainers[2], LessonDateTime = now.AddDays(7), RoomName = "Зал №1", IsTrial = true },
+            new() { MemberId = Members[9].Id, Member = Members[9], TrainerId = Trainers[4].Id, Trainer = Trainers[4], LessonDateTime = now.AddDays(8), RoomName = "Зал №3", IsTrial = false }
+        ]);
 
-    /// <summary>
-    /// Создаёт список из 10 занятий в расписании
-    /// </summary>
-    private static List<Schedule> GetSchedules(List<FitnesClass> classes, List<Trainer> trainers)
-    {
-        var list = new List<Schedule>();
-
-        for (int i = 0; i < 10; i++)
+        foreach (var booking in Bookings)
         {
-            var schedule = new Schedule
-            {
-                Id = Guid.NewGuid(),
-                FitnesClassId = classes[i].Id,
-                FitnesClass = classes[i],
-                TrainerId = trainers[i].Id,
-                Trainer = trainers[i],
-                StartTime = DateTime.Now.AddDays(i - 5).AddHours(10 + i),
-                RoomNumber = $"Зал №{(i % 3) + 1}"
-            };
-
-            classes[i].Schedules.Add(schedule);
-            trainers[i].Schedules.Add(schedule);
-
-            list.Add(schedule);
+            booking.Member.Bookings.Add(booking);
+            booking.Trainer.Bookings.Add(booking);
         }
-
-        return list;
-    }
-
-    /// <summary>
-    /// Создаёт список из 10 бронирований/записей
-    /// </summary>
-    private static List<Booking> GetBookings(List<Member> members, List<Schedule> schedules)
-    {
-        var list = new List<Booking>();
-        var statuses = new[] { BookingStatus.Confirmed, BookingStatus.Attended, BookingStatus.Pending, BookingStatus.Canceled };
-
-        for (int i = 0; i < 10; i++)
-        {
-            var booking = new Booking
-            {
-                Id = Guid.NewGuid(),
-                MemberId = members[i].Id,
-                Member = members[i],
-                ScheduleId = schedules[i % schedules.Count].Id,
-                Schedule = schedules[i % schedules.Count],
-                BookingDate = DateTime.Now.AddDays(-i),
-                Status = statuses[i % statuses.Length]
-            };
-
-            members[i].Bookings.Add(booking);
-            schedules[i % schedules.Count].Bookings.Add(booking);
-
-            list.Add(booking);
-        }
-
-        return list;
     }
 }

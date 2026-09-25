@@ -3,56 +3,37 @@
 /// <summary>
 /// Тренер фитнес-клуба
 /// </summary>
-public class Trainer
+public class Trainer : Person
 {
     /// <summary>
-    /// Идентификатор тренера
+    /// Идентификатор специализации тренера
     /// </summary>
-    public Guid Id { get; set; } = Guid.NewGuid();
-
-    /// <summary>
-    /// Имя тренера
-    /// </summary>
-    /// <example>Алексей</example>
-    public required string FirstName { get; set; }
-
-    /// <summary>
-    /// Фамилия тренера
-    /// </summary>
-    /// <example>Смирнов</example>
-    public required string LastName { get; set; }
+    public required Guid SpecializationId { get; set; }
 
     /// <summary>
     /// Специализация тренера
     /// </summary>
-    /// <example>Силовой тренинг</example>
-    public required string Specialization { get; set; }
+    public Specialization Specialization { get; set; } = null!;
 
     /// <summary>
-    /// Почасовая ставка тренера
+    /// Стаж работы тренера в годах
     /// </summary>
-    /// <example>2000</example>
-    public required decimal HourlyRate { get; set; }
-
-    /// <summary>
-    /// Дата приема на работу
-    /// </summary>
-    public required DateTime HireDate { get; set; }
+    public required int WorkExperienceYears { get; set; }
 
     /// <summary>
     /// Номер телефона тренера
     /// </summary>
-    /// <example>+79001110001</example>
+    /// <example>+79998887766</example>
     public required string PhoneNumber { get; set; }
 
     /// <summary>
-    /// Адрес электронной почты тренера
+    /// Электронная почта тренера
     /// </summary>
     /// <example>trainer@test.com</example>
     public string? Email { get; set; }
 
     /// <summary>
-    /// Список занятий тренера
+    /// Записи клиентов на занятия с тренером.
     /// </summary>
-    public List<Schedule> Schedules { get; set; } = [];
+    public List<Booking> Bookings { get; set; } = [];
 }

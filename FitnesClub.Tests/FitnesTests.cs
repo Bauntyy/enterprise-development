@@ -1,193 +1,118 @@
 ﻿using FitnesClub.Domain.Entities;
-using FitnesClub.Domain.Enums;
 
 namespace FitnesClub.Tests;
 
-/// <summary>
-/// Тесты LINQ-запросов к данным фитнес-клуба
-/// </summary>
-/// <param name="fixture">Тестовый набор данных</param>
-
-public class QueriesTest(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
+public class FitnesTests
 {
-    private readonly List<Member> _members = fixture.Members;
-    private readonly List<Trainer> _trainers = fixture.Trainers;
-    private readonly List<FitnesClass> _classes = fixture.Classes;
-    private readonly List<Schedule> _schedules = fixture.Schedules;
-    private readonly List<Booking> _bookings = fixture.Bookings;
+    private readonly FitnesFixtures _fixture = new();
 
     /// <summary>
-    /// Получение активных VIP клиентов с сортировкой по фамилии и имени
+    /// Вывести информацию о всех тренерах, стаж работы которых не менее 5 лет
     /// </summary>
     [Fact]
-    public void GetActiveVipMembers_OrderedByLastName()
+    public void Trainers_WithExperienceAtLeastFiveYears_ShouldBeReturned()
     {
-        var result = _members
-            .Where(m =>
-                m.IsActive &&
-                m.MembershipType == MembershipType.VIP)
-            .OrderBy(m => m.LastName)
-            .ThenBy(m => m.FirstName)
+        var trainers = _fixture.Trainers
+            .Where(t => t.WorkExperienceYears >= 5)
             .ToList();
 
-        Assert.Equal(3, result.Count);
-
-        Assert.Equal("Васильев", result[0].LastName);
-        Assert.Equal("Иванов", result[1].LastName);
-        Assert.Equal("Михайлов", result[2].LastName);
-
-        Assert.All(result, member =>
-        {
-            Assert.True(member.IsActive);
-            Assert.Equal(MembershipType.VIP, member.MembershipType);
-        });
+        Assert.NotEmpty(trainers);
+        Assert.All(
+            trainers,
+            trainer => Assert.True(trainer.WorkExperienceYears >= 5));
     }
 
     /// <summary>
-    /// Получение расписания конкретного тренера
+    /// Является ли зал доступным для записи в данный момент
     /// </summary>
     [Fact]
-    public void GetSchedulesByTrainerId()
+    public void Room_ShouldBeAvailable_WhenThereIsNoCurrentBooking()
     {
-        var targetTrainerId = _trainers[0].Id;
+        var roomName = "Зал №1";
+        var now = DateTime.Now;
 
-        var resultSchedules = _schedules
-            .Where(s => s.TrainerId == targetTrainerId)
-            .OrderBy(s => s.StartTime)
+        var isRoomAvailable = !_fixture.Bookings.Any(
+            booking =>
+                booking.RoomName == roomName &&
+                booking.LessonDateTime <= now &&
+                booking.LessonDateTime > now.AddHours(-1));
+
+        Assert.True(isRoomAvailable);
+    }
+
+    /// <summary>
+    /// Вывести информацию о клиентах у которых просрочен абонемент, упорядочить по ФИО
+    /// </summary>
+    [Fact]
+    public void ExpiredMemberships_ShouldBeSortedByFullName()
+    {
+        var expiredMembers = _fixture.Members
+            .Where(member => member.MembershipEndDate < DateTime.Today)
+            .OrderBy(member => member.LastName)
+            .ThenBy(member => member.FirstName)
             .ToList();
 
-        Assert.Single(resultSchedules);
+        Assert.NotEmpty(expiredMembers);
 
         Assert.Equal(
-            targetTrainerId,
-            resultSchedules[0].TrainerId);
-
-        Assert.Equal(
-            _trainers[0].Id,
-            resultSchedules[0].Trainer.Id);
-
-        Assert.Equal(
-            _classes[0].Id,
-            resultSchedules[0].FitnesClassId);
+            expiredMembers.OrderBy(
+                member => member.LastName)
+                .ThenBy(member => member.FirstName),
+            expiredMembers);
     }
 
     /// <summary>
-    /// Подсчёт количества бронирований по статусам
+    /// Вывести информацию о занятиях за текущий месяц, проходящих в выбранном зале
     /// </summary>
     [Fact]
-    public void GetBookingCountsByStatus()
+    public void Bookings_ShouldBeReturnedForCurrentMonthAndSelectedRoom()
     {
-        var statusCounts = _bookings
-            .GroupBy(b => b.Status)
-            .Select(g => new
-            {
-                Status = g.Key,
-                Count = g.Count()
-            })
-            .ToDictionary(
-                x => x.Status,
-                x => x.Count);
+        var roomName = "Зал №1";
+        var today = DateTime.Today;
 
-        Assert.Equal(4, statusCounts.Count);
-
-        Assert.Equal(
-            3,
-            statusCounts[BookingStatus.Confirmed]);
-
-        Assert.Equal(
-            3,
-            statusCounts[BookingStatus.Attended]);
-
-        Assert.Equal(
-            2,
-            statusCounts[BookingStatus.Pending]);
-
-        Assert.Equal(
-            2,
-            statusCounts[BookingStatus.Canceled]);
-    }
-
-    /// <summary>
-    /// Расчёт общей стоимости подтверждённых записей на основе почасовой ставки тренеров
-    /// </summary>
-    
-    [Fact]
-    public void GetTotalRevenueFromConfirmedBookings()
-    {
-        var totalRevenue = _bookings
-            .Where(b =>
-                b.Status == BookingStatus.Confirmed &&
-                b.Schedule?.Trainer != null)
-            .Sum(b => b.Schedule!.Trainer!.HourlyRate);
-
-        Assert.Equal(6800m, totalRevenue);
-    }
-
-    /// <summary>
-    /// Получение трёх самых популярных занятий по количеству бронирований
-    /// </summary>
-    [Fact]
-    public void GetTopThreePopularClasses()
-    {
-        var topClasses = _bookings
-            .Where(b => b.Schedule?.FitnesClass != null)
-            .GroupBy(b => b.Schedule!.FitnesClass!)
-            .OrderByDescending(g => g.Count())
-            .ThenBy(g => g.Key.Name)
-            .Take(3)
-            .Select(g => new
-            {
-                FitnessClass = g.Key,
-                BookingsCount = g.Count()
-            })
+        var bookings = _fixture.Bookings
+            .Where(booking =>
+                booking.RoomName == roomName &&
+                booking.LessonDateTime.Year == today.Year &&
+                booking.LessonDateTime.Month == today.Month)
             .ToList();
 
-        Assert.Equal(3, topClasses.Count);
+        Assert.NotEmpty(bookings);
 
         Assert.All(
-            topClasses,
-            item => Assert.Equal(1, item.BookingsCount));
-
-        Assert.Equal(
-            new[]
+            bookings,
+            booking =>
             {
-                "Aqua Fitness",
-                "Boxing Club",
-                "Crossfit WOD"
-            },
-            topClasses
-                .Select(x => x.FitnessClass.Name)
-                .ToArray());
+                Assert.Equal(roomName, booking.RoomName);
+                Assert.Equal(today.Year, booking.LessonDateTime.Year);
+                Assert.Equal(today.Month, booking.LessonDateTime.Month);
+            });
     }
 
     /// <summary>
-    /// Получение занятий с продолжительностью не менее 45 минут
+    /// Вывести топ 5 наиболее популярных тренеров
     /// </summary>
     [Fact]
-    public void GetClassesByMinimumDuration()
+    public void TopFiveMostPopularTrainers_ShouldBeReturned()
     {
-        const int minDurationMinutes = 45;
-
-        var resultClasses = _classes
-            .Where(c => c.DurationMinutes >= minDurationMinutes)
-            .OrderBy(c => c.DurationMinutes)
-            .ThenBy(c => c.Name)
+        var topFive = _fixture.Trainers
+            .Select(trainer => new
+            {
+                Trainer = trainer,
+                BookingCount = trainer.Bookings.Count
+            })
+            .OrderByDescending(x => x.BookingCount)
+            .ThenBy(x => x.Trainer.LastName)
+            .Take(5)
             .ToList();
 
-        Assert.Equal(10, resultClasses.Count);
+        Assert.Equal(5, topFive.Count);
 
-        Assert.All(
-            resultClasses,
-            fitnessClass =>
-                Assert.True(
-                    fitnessClass.DurationMinutes >=
-                    minDurationMinutes));
-
-        for (int i = 1; i < resultClasses.Count; i++)
-        {
-            Assert.True(
-                resultClasses[i - 1].DurationMinutes <=
-                resultClasses[i].DurationMinutes);
-        }
+        Assert.True(
+            topFive.Zip(
+                    topFive.Skip(1),
+                    (first, second) =>
+                        first.BookingCount >= second.BookingCount)
+                .All(result => result));
     }
 }

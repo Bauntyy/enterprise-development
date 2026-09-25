@@ -1,14 +1,12 @@
-﻿using FitnesClub.Domain.Enums;
-
-namespace FitnesClub.Domain.Entities;
+﻿namespace FitnesClub.Domain.Entities;
 
 /// <summary>
-/// Бронирование занятия клиентом
+/// Запись клиента на персональное занятие с тренером
 /// </summary>
 public class Booking
 {
     /// <summary>
-    /// Идентификатор бронирования
+    /// Идентификатор записи
     /// </summary>
     public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -18,27 +16,33 @@ public class Booking
     public required Guid MemberId { get; set; }
 
     /// <summary>
-    /// Клиент, создавший бронирование
+    /// Клиент, записанный на занятие
     /// </summary>
     public Member Member { get; set; } = null!;
 
     /// <summary>
-    /// Идентификатор расписания
+    /// Идентификатор тренера
     /// </summary>
-    public required Guid ScheduleId { get; set; }
+    public required Guid TrainerId { get; set; }
 
     /// <summary>
-    /// Расписание забронированного занятия
+    /// Тренер, проводящий занятие
     /// </summary>
-    public Schedule Schedule { get; set; } = null!;
+    public Trainer Trainer { get; set; } = null!;
 
     /// <summary>
-    /// Дата создания бронирования
+    /// Дата и время занятия.
     /// </summary>
-    public required DateTime BookingDate { get; set; }
+    public required DateTime LessonDateTime { get; set; }
 
     /// <summary>
-    /// Статус бронирования
+    /// Название зала
     /// </summary>
-    public BookingStatus Status { get; set; } = BookingStatus.Pending;
+    /// <example>Зал №1</example>
+    public required string RoomName { get; set; }
+
+    /// <summary>
+    /// Признак пробного посещения
+    /// </summary>
+    public bool IsTrial { get; set; }
 }
