@@ -1,10 +1,9 @@
-﻿using FitnesClub.Domain.Entities;
+﻿namespace FitnesClub.Tests;
 
-namespace FitnesClub.Tests;
-
-public class FitnesTests
+public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
 {
-    private readonly FitnesFixtures _fixture = new();
+    private static readonly DateTime date =
+    new DateTime(2026, 9, 28, 12, 0, 0);
 
     /// <summary>
     /// Вывести информацию о всех тренерах, стаж работы которых не менее 5 лет
@@ -12,14 +11,22 @@ public class FitnesTests
     [Fact]
     public void Trainers_WithExperienceAtLeastFiveYears_ShouldBeReturned()
     {
-        var trainers = _fixture.Trainers
-            .Where(t => t.WorkExperienceYears >= 5)
+        var expected = new[]
+    {
+        fixture.Trainers[0],
+        fixture.Trainers[1],
+        fixture.Trainers[2],
+        fixture.Trainers[4],
+        fixture.Trainers[6],
+        fixture.Trainers[7],
+        fixture.Trainers[8]
+    };
+
+        var trainers = fixture.Trainers
+            .Where(trainer => trainer.WorkExperienceYears >= 5)
             .ToList();
 
-        Assert.NotEmpty(trainers);
-        Assert.All(
-            trainers,
-            trainer => Assert.True(trainer.WorkExperienceYears >= 5));
+        Assert.Equal(expected, trainers);
     }
 
     /// <summary>
@@ -29,13 +36,12 @@ public class FitnesTests
     public void Room_ShouldBeAvailable_WhenThereIsNoCurrentBooking()
     {
         var roomName = "Зал №1";
-        var now = DateTime.Now;
 
-        var isRoomAvailable = !_fixture.Bookings.Any(
+        var isRoomAvailable = !fixture.Bookings.Any(
             booking =>
                 booking.RoomName == roomName &&
-                booking.LessonDateTime <= now &&
-                booking.LessonDateTime.Date.Add(booking.Duration) > now);
+                booking.LessonDateTime <= date &&
+                booking.LessonDateTime.Add(booking.Duration) > date);
 
         Assert.True(isRoomAvailable);
     }
@@ -46,19 +52,21 @@ public class FitnesTests
     [Fact]
     public void ExpiredMemberships_ShouldBeSortedByFullName()
     {
-        var expiredMembers = _fixture.Members
-            .Where(member => member.MembershipEndDate < DateTime.Today)
-            .OrderBy(member => member.LastName)
-            .ThenBy(member => member.FirstName)
-            .ToList();
+        var expected = new[]
+        {
+            fixture.Members[6],
+            fixture.Members[4],
+            fixture.Members[8],
+            fixture.Members[2]
+        };
 
-        Assert.NotEmpty(expiredMembers);
+        var expiredMembers = fixture.Members
+        .Where(member => member.MembershipEndDate < date)
+        .OrderBy(member => member.LastName)
+        .ThenBy(member => member.FirstName)
+        .ToList();
 
-        Assert.Equal(
-            expiredMembers.OrderBy(
-                member => member.LastName)
-                .ThenBy(member => member.FirstName),
-            expiredMembers);
+        Assert.Equal(expected, expiredMembers);
     }
 
     /// <summary>
@@ -68,25 +76,21 @@ public class FitnesTests
     public void Bookings_ShouldBeReturnedForCurrentMonthAndSelectedRoom()
     {
         var roomName = "Зал №1";
-        var today = DateTime.Today;
 
-        var bookings = _fixture.Bookings
+        var expected = new[]
+        {
+        fixture.Bookings[0],
+        fixture.Bookings[2]
+    };
+
+        var bookings = fixture.Bookings
             .Where(booking =>
                 booking.RoomName == roomName &&
-                booking.LessonDateTime.Year == today.Year &&
-                booking.LessonDateTime.Month == today.Month)
+                booking.LessonDateTime.Year == date.Year &&
+                booking.LessonDateTime.Month == date.Month)
             .ToList();
 
-        Assert.NotEmpty(bookings);
-
-        Assert.All(
-            bookings,
-            booking =>
-            {
-                Assert.Equal(roomName, booking.RoomName);
-                Assert.Equal(today.Year, booking.LessonDateTime.Year);
-                Assert.Equal(today.Month, booking.LessonDateTime.Month);
-            });
+        Assert.Equal(expected, bookings);
     }
 
     /// <summary>
@@ -95,7 +99,16 @@ public class FitnesTests
     [Fact]
     public void TopFiveMostPopularTrainers_ShouldBeReturned()
     {
-        var topFive = _fixture.Trainers
+        var expected = new[]
+        {
+        fixture.Trainers[0],
+        fixture.Trainers[2],
+        fixture.Trainers[4],
+        fixture.Trainers[1],
+        fixture.Trainers[3]
+    };
+
+        var topFive = fixture.Trainers
             .Select(trainer => new
             {
                 Trainer = trainer,
@@ -104,15 +117,9 @@ public class FitnesTests
             .OrderByDescending(x => x.BookingCount)
             .ThenBy(x => x.Trainer.LastName)
             .Take(5)
+            .Select(x => x.Trainer)
             .ToList();
 
-        Assert.Equal(5, topFive.Count);
-
-        Assert.True(
-            topFive.Zip(
-                    topFive.Skip(1),
-                    (first, second) =>
-                        first.BookingCount >= second.BookingCount)
-                .All(result => result));
+        Assert.Equal(expected, topFive);
     }
 }

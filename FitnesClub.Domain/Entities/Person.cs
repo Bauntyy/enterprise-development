@@ -28,6 +28,18 @@ public abstract class Person
     public required string LastName { get; set; }
 
     /// <summary>
+    /// Номер телефона
+    /// </summary>
+    /// <example>+79998887766</example>
+    public required string PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Электронная почта
+    /// </summary>
+    /// <example>ivan@test.com</example>
+    public string? Email { get; set; }
+
+    /// <summary>
     /// Пол
     /// </summary>
     public required Gender Gender { get; set; }
@@ -35,5 +47,5 @@ public abstract class Person
     /// <summary>
     /// Дата рождения
     /// </summary>
-    public required DateTime BirthDate { get; set; }
+    public required DateOnly BirthDate { get; set; }
 }
