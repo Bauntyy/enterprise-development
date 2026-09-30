@@ -2,9 +2,6 @@
 
 public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
 {
-    private static readonly DateTime date =
-    new DateTime(2026, 9, 28, 12, 0, 0);
-
     /// <summary>
     /// Вывести информацию о всех тренерах, стаж работы которых не менее 5 лет
     /// </summary>
@@ -12,15 +9,15 @@ public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
     public void Trainers_WithExperienceAtLeastFiveYears_ShouldBeReturned()
     {
         var expected = new[]
-    {
-        fixture.Trainers[0],
-        fixture.Trainers[1],
-        fixture.Trainers[2],
-        fixture.Trainers[4],
-        fixture.Trainers[6],
-        fixture.Trainers[7],
-        fixture.Trainers[8]
-    };
+        {
+            fixture.Trainers[0],
+            fixture.Trainers[1],
+            fixture.Trainers[2],
+            fixture.Trainers[4],
+            fixture.Trainers[6],
+            fixture.Trainers[7],
+            fixture.Trainers[8]
+        };
 
         var trainers = fixture.Trainers
             .Where(trainer => trainer.WorkExperienceYears >= 5)
@@ -40,8 +37,8 @@ public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
         var isRoomAvailable = !fixture.Bookings.Any(
             booking =>
                 booking.RoomName == roomName &&
-                booking.LessonDateTime <= date &&
-                booking.LessonDateTime.Add(booking.Duration) > date);
+                booking.LessonDateTime <= fixture.date &&
+                booking.LessonDateTime.Add(booking.Duration) > fixture.date);
 
         Assert.True(isRoomAvailable);
     }
@@ -61,7 +58,7 @@ public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
         };
 
         var expiredMembers = fixture.Members
-        .Where(member => member.MembershipEndDate < date)
+        .Where(member => member.MembershipEndDate < fixture.date)
         .OrderBy(member => member.LastName)
         .ThenBy(member => member.FirstName)
         .ToList();
@@ -79,15 +76,15 @@ public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
 
         var expected = new[]
         {
-        fixture.Bookings[0],
-        fixture.Bookings[2]
-    };
+            fixture.Bookings[0],
+            fixture.Bookings[2]
+        };
 
         var bookings = fixture.Bookings
             .Where(booking =>
                 booking.RoomName == roomName &&
-                booking.LessonDateTime.Year == date.Year &&
-                booking.LessonDateTime.Month == date.Month)
+                booking.LessonDateTime.Year == fixture.date.Year &&
+                booking.LessonDateTime.Month == fixture.date.Month)
             .ToList();
 
         Assert.Equal(expected, bookings);
@@ -101,12 +98,12 @@ public class FitnesTests(FitnesFixtures fixture) : IClassFixture<FitnesFixtures>
     {
         var expected = new[]
         {
-        fixture.Trainers[0],
-        fixture.Trainers[2],
-        fixture.Trainers[4],
-        fixture.Trainers[1],
-        fixture.Trainers[3]
-    };
+            fixture.Trainers[0],
+            fixture.Trainers[2],
+            fixture.Trainers[4],
+            fixture.Trainers[1],
+            fixture.Trainers[3]
+        };
 
         var topFive = fixture.Trainers
             .Select(trainer => new
