@@ -1,9 +1,11 @@
-﻿namespace FitnesClub.Domain.Entities;
+﻿using FitnesClub.Domain.Interfaces;
+
+namespace FitnesClub.Domain.Entities;
 
 /// <summary>
 /// Специализация тренера
 /// </summary>
-public class Specialization
+public class Specialization : IEntity
 {
     /// <summary>
     /// Идентификатор специализации

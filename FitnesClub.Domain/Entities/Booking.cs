@@ -1,9 +1,11 @@
-﻿namespace FitnesClub.Domain.Entities;
+﻿using FitnesClub.Domain.Interfaces;
+
+namespace FitnesClub.Domain.Entities;
 
 /// <summary>
 /// Запись клиента на персональное занятие с тренером
 /// </summary>
-public class Booking
+public class Booking : IEntity
 {
     /// <summary>
     /// Идентификатор записи

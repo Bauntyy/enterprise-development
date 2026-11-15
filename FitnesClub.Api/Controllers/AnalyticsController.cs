@@ -173,13 +173,13 @@ public class AnalyticsController(
     }
 
     /// <summary>
-    /// 5. Возвращает топ-5 наиболее популярных тренеров по количеству оформленных занятий.
+    /// 5. Возвращает топ-5 наиболее популярных тренеров с количеством их занятий.
     /// </summary>
-    /// <returns>Список из пяти наиболее востребованных тренеров клуба.</returns>
+    /// <returns>Список из пяти наиболее востребованных тренеров клуба с количеством записей.</returns>
     [HttpGet("top-trainers")]
-    [ProducesResponseType(typeof(IReadOnlyList<TrainerDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<PopularTrainerDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IReadOnlyList<TrainerDto>> GetTopFiveTrainers()
+    public ActionResult<IReadOnlyList<PopularTrainerDto>> GetTopFiveTrainers()
     {
         logger.LogInformation("Запрос аналитики: получение топ-5 популярных тренеров");
 
@@ -198,7 +198,7 @@ public class AnalyticsController(
                 .OrderByDescending(x => x.BookingCount)
                 .ThenBy(x => x.Trainer.LastName)
                 .Take(5)
-                .Select(x => x.Trainer.ToDto())
+                .Select(x => new PopularTrainerDto(x.Trainer.ToDto(), x.BookingCount))
                 .ToList();
 
             return Ok(topTrainers);

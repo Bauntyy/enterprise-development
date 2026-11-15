@@ -1,11 +1,12 @@
 ﻿using FitnesClub.Domain.Enums;
+using FitnesClub.Domain.Interfaces;
 
 namespace FitnesClub.Domain.Entities;
 
 /// <summary>
 /// Базовый класс для клиента и тренера фитнес-клуба.
 /// </summary>
-public abstract class Person
+public abstract class Person : IEntity
 {
     /// <summary>
     /// ID 
