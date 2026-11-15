@@ -29,7 +29,7 @@ public class AspireAppFixture : IAsyncLifetime
         using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(3));
         await App.ResourceNotifications.WaitForResourceHealthyAsync("api", cts.Token);
 
-        ApiClient = App.CreateHttpClient("api");
+        ApiClient = App.CreateHttpClient("api", "http");
     }
 
     public async ValueTask DisposeAsync()

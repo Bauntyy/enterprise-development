@@ -39,7 +39,10 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/swagger", () => Results.Redirect("/scalar/v1"));
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthorization();
 app.MapControllers();
 app.MapDefaultEndpoints();
